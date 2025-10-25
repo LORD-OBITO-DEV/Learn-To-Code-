@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connexion - LearnToCode</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+* {margin:0; padding:0; box-sizing:border-box; scroll-behavior:smooth;}
+body {font-family:'Poppins', sans-serif; background:#f9fafb; color:#1e293b;}
+header {background:#1e40af; color:white; padding:20px; text-align:center; box-shadow:0 3px 10px rgba(0,0,0,0.15);}
+header h1 {font-size:2em;}
+nav a {color:#e0e7ff; margin:0 12px; text-decoration:none; font-weight:500;}
+nav a:hover {text-decoration:underline;}
+.container {max-width:400px; margin:50px auto; background:white; padding:30px; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+.container h2 {color:#1e40af; margin-bottom:20px; text-align:center;}
+.container form {display:flex; flex-direction:column;}
+.container input {margin-bottom:15px; padding:10px; border-radius:8px; border:1px solid #cbd5e1; outline:none; font-size:1em;}
+.container button {padding:12px; border:none; border-radius:8px; background:#1e40af; color:white; font-weight:600; cursor:pointer; transition:0.3s;}
+.container button:hover {background:#2563eb;}
+.container p {font-size:0.85em; color:#475569; text-align:center;}
+.container p a {color:#1d4ed8; text-decoration:none;}
+.container p a:hover {text-decoration:underline;}
+footer {background:#0f172a; color:#cbd5e1; text-align:center; padding:20px; font-size:0.75em;}
+footer a {color:#60a5fa; text-decoration:none;}
+footer a:hover {text-decoration:underline;}
+</style>
+</head>
+<body>
+<header>
+  <h1>⚡ LearnToCode</h1>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="register.html">Inscription</a>
+    <a href="login.html">Connexion</a>
+    <a href="course.html">Cours</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h2>Se connecter</h2>
+  <form id="loginForm">
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Mot de passe" required>
+    <button type="submit">Connexion</button>
+  </form>
+  <p>Pas encore inscrit ? <a href="register.html">Créer un compte</a></p>
+</div>
+
+<footer>
+  <p>© LORD OBITO TECH - ALL RIGHTS RESERVED</p>
+  <p>
+    <a href="cookies.html">Cookies</a> |
+    <a href="legal.html">Notice</a> |
+    <a href="privacy.html">Privacy</a>
+  </p>
+</footer>
+
+<script>
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(loginForm);
+  const data = Object.fromEntries(formData.entries());
+  try {
+    const res = await fetch('/api/auth/login', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email:data.email,password:data.password})
+    });
+    const result = await res.json();
+    if(res.ok){
+      alert('Connexion réussie !');
+      // Redirection possible
+      window.location.href='course.html';
+    } else alert(result.error || 'Erreur lors de la connexion.');
+  } catch(err){
+    console.error(err);
+    alert('Erreur serveur, réessaie plus tard.');
+  }
+});
+</script>
+<!-- Bouton IA flottant -->
+<div id="ai-widget">
+  <div id="ai-button" title="Besoin d'aide ? 💡">💡</div>
+  <div id="ai-chat" style="display:none;">
+    <div style="background:#1e40af; color:white; text-align:center; padding:10px; font-weight:600;">ASK QUESTION 💬</div>
+    <div id="ai-chat-messages" style="flex:1; padding:10px; overflow-y:auto; max-height:250px;"></div>
+    <div style="display:flex; border-top:1px solid #ddd;">
+      <input id="ai-input" type="text" placeholder="Pose ta question..." style="flex:1; padding:6px; border:none; outline:none;">
+      <button id="ai-send" style="background:#1e40af; color:white; border:none; padding:6px 10px; cursor:pointer;">➤</button>
+    </div>
+  </div>
+</div>
+
+<style>
+#ai-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  font-family: 'Poppins', sans-serif;
+}
+
+#ai-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #1e40af;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transition: 0.3s;
+}
+
+#ai-button:hover {
+  transform: scale(1.1);
+}
+
+#ai-chat {
+  width: 300px;
+  max-height: 350px;
+  background:white;
+  border-radius:15px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.3);
+  display:flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  overflow:hidden;
+}
+</style>
+
+<script>
+const aiButton = document.getElementById('ai-button');
+const aiChat = document.getElementById('ai-chat');
+const messagesDiv = document.getElementById('ai-chat-messages');
+const input = document.getElementById('ai-input');
+const sendBtn = document.getElementById('ai-send');
+
+aiButton.addEventListener('click', () => {
+  aiChat.style.display = aiChat.style.display === 'flex' ? 'none' : 'flex';
+});
+
+function addMessage(text, sender='user') {
+  const msg = document.createElement('div');
+  msg.textContent = text;
+  msg.style.margin='5px 0';
+  msg.style.padding='6px 10px';
+  msg.style.borderRadius='10px';
+  msg.style.maxWidth='80%';
+  msg.style.alignSelf = sender==='user' ? 'flex-end' : 'flex-start';
+  msg.style.background = sender==='user' ? '#3b82f6' : '#e5e7eb';
+  msg.style.color = sender==='user' ? 'white' : '#1e293b';
+  messagesDiv.appendChild(msg);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+async function sendQuestion() {
+  const question = input.value.trim();
+  if(!question) return;
+  addMessage(question,'user');
+  input.value='';
+  addMessage('💬 En cours...','ai');
+
+  try{
+    const response = await fetch('/api/ai/ask',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({question})
+    });
+    const data = await response.json();
+    messagesDiv.lastChild.textContent = data.answer;
+  }catch(err){
+    messagesDiv.lastChild.textContent='❌ Erreur, réessaie plus tard';
+    console.error(err);
+  }
+}
+
+sendBtn.addEventListener('click',sendQuestion);
+input.addEventListener('keypress',e=>{if(e.key==='Enter') sendQuestion();});
+</script>
+</body>
+</html>
