@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnToCode – Cours</title>
+  <style>
+    body { font-family: 'Poppins', sans-serif; background:#f9fafb; color:#1e293b; margin:0; padding:0;}
+    header { background:#1e40af; color:white; padding:25px; text-align:center;}
+    header a { color:white; margin:0 10px; text-decoration:none; font-weight:500;}
+    header a:hover { text-decoration:underline;}
+    .course-list { max-width:900px; margin:50px auto; display:grid; grid-gap:20px; }
+    .course-card { background:white; padding:25px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.1); transition:0.3s; cursor:pointer;}
+    .course-card:hover { transform:translateY(-5px); box-shadow:0 6px 18px rgba(0,0,0,0.15);}
+    .course-card h3 { color:#1e40af; margin-bottom:10px;}
+    .course-card p { color:#475569; font-size:0.95em;}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ LearnToCode – Cours</h1>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="register.html">Inscription</a>
+    <a href="login.html">Connexion</a>
+  </nav>
+</header>
+
+<section class="course-list" id="courseList"></section>
+
+<script>
+  // Liste des cours avec leur page de leçons
+  const courses = [
+    { title: "HTML & CSS", description: "Crée ton premier site web et apprends les bases du front-end.", link: "cours_html_css.html" },
+    { title: "JavaScript", description: "Rends tes pages web dynamiques et interactives.", link: "cours_javascript.html" },
+    { title: "Python", description: "Découvre le langage le plus populaire pour débuter la programmation.", link: "cours_python.html" }
+  ];
+
+  const courseList = document.getElementById('courseList');
+
+  courses.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'course-card';
+    card.innerHTML = `<h3>${c.title}</h3><p>${c.description}</p>`;
+    card.addEventListener('click', () => {
+      window.location.href = c.link;
+    });
+    courseList.appendChild(card);
+  });
+</script>
+
+</body>
+</html>
