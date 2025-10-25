@@ -193,6 +193,109 @@
   </style>
 </head>
 <body>
+  <!-- Bouton IA flottant -->
+<div id="ai-widget">
+  <div id="ai-button" title="Besoin d'aide ? 💡">💡</div>
+  <div id="ai-chat" style="display:none;">
+    <div style="background:#1e40af; color:white; text-align:center; padding:10px; font-weight:600;">L-Assist 💬</div>
+    <div id="ai-chat-messages" style="flex:1; padding:10px; overflow-y:auto; max-height:250px;"></div>
+    <div style="display:flex; border-top:1px solid #ddd;">
+      <input id="ai-input" type="text" placeholder="Pose ta question..." style="flex:1; padding:6px; border:none; outline:none;">
+      <button id="ai-send" style="background:#1e40af; color:white; border:none; padding:6px 10px; cursor:pointer;">➤</button>
+    </div>
+  </div>
+</div>
+
+<style>
+#ai-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  font-family: 'Poppins', sans-serif;
+}
+
+#ai-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #1e40af;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transition: 0.3s;
+}
+
+#ai-button:hover {
+  transform: scale(1.1);
+}
+
+#ai-chat {
+  width: 300px;
+  max-height: 350px;
+  background:white;
+  border-radius:15px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.3);
+  display:flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  overflow:hidden;
+}
+</style>
+
+<script>
+const aiButton = document.getElementById('ai-button');
+const aiChat = document.getElementById('ai-chat');
+const messagesDiv = document.getElementById('ai-chat-messages');
+const input = document.getElementById('ai-input');
+const sendBtn = document.getElementById('ai-send');
+
+aiButton.addEventListener('click', () => {
+  aiChat.style.display = aiChat.style.display === 'flex' ? 'none' : 'flex';
+});
+
+function addMessage(text, sender='user') {
+  const msg = document.createElement('div');
+  msg.textContent = text;
+  msg.style.margin='5px 0';
+  msg.style.padding='6px 10px';
+  msg.style.borderRadius='10px';
+  msg.style.maxWidth='80%';
+  msg.style.alignSelf = sender==='user' ? 'flex-end' : 'flex-start';
+  msg.style.background = sender==='user' ? '#3b82f6' : '#e5e7eb';
+  msg.style.color = sender==='user' ? 'white' : '#1e293b';
+  messagesDiv.appendChild(msg);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+async function sendQuestion() {
+  const question = input.value.trim();
+  if(!question) return;
+  addMessage(question,'user');
+  input.value='';
+  addMessage('💬 En cours...','ai');
+
+  try{
+    const response = await fetch('/api/ai/ask',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({question})
+    });
+    const data = await response.json();
+    messagesDiv.lastChild.textContent = data.answer;
+  }catch(err){
+    messagesDiv.lastChild.textContent='❌ Erreur, réessaie plus tard';
+    console.error(err);
+  }
+}
+
+sendBtn.addEventListener('click',sendQuestion);
+input.addEventListener('keypress',e=>{if(e.key==='Enter') sendQuestion();});
+</script>
   <header>
     <h1>⚡ LearnToCode</h1>
     <nav>
